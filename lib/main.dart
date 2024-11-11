@@ -1,6 +1,5 @@
 import 'package:finalcalorielens/Pages/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:finalcalorielens/Pages/LogInPage.dart'; // Import LogInPage
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:SplashScreen(), // Set LogInPage as the primary page
+      home:SplashScreen(), // first to show up
       debugShowCheckedModeBanner: false,
     );
   }

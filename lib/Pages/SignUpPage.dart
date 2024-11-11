@@ -22,8 +22,6 @@ class _SignUpPageState extends State<SignUpPage> {
   // Method to handle sign-up logic
   void _signUp() {
     if (_formKey.currentState?.validate() ?? false) {
-      // Logic to handle sign-up goes here, e.g., save to database, etc.
-      // For now, print the user inputs for verification
       print('First Name: ${_firstNameController.text}');
       print('Last Name: ${_lastNameController.text}');
       print('Email: ${_emailController.text}');
@@ -38,285 +36,128 @@ class _SignUpPageState extends State<SignUpPage> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: AssetImage('assets/BG3.png'), fit: BoxFit.cover),
+          image: AssetImage('assets/bgg.jpg'), // Food-themed background
+          fit: BoxFit.cover,
+        ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
+          iconTheme: IconThemeData(color: Colors.deepOrange),
         ),
-        body: Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 35, top: 30),
-              child: Text(
-                'Create\nAccount',
-                style: TextStyle(color: Colors.white, fontSize: 33),
-              ),
-            ),
-            SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.28),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 35),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Top Spacing
+                  SizedBox(height: 20),
+
+                  // Header Text
+                  Text(
+                    'Get Started\nwith Delicious Food!',
+                    style: TextStyle(
+                      color: Colors.deepOrange,
+                      fontSize: 33,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  // Form Fields
+                  _buildTextField(_firstNameController, "First Name"),
+                  _buildTextField(_lastNameController, "Last Name"),
+                  _buildTextField(_emailController, "Email"),
+                  _buildTextField(_heightController, "Height (in inches)", keyboardType: TextInputType.number),
+                  _buildTextField(_weightController, "Weight (kg)", keyboardType: TextInputType.number),
+                  _buildTextField(_passwordController, "Password", obscureText: true),
+                  _buildTextField(_confirmPasswordController, "Confirm Password", obscureText: true),
+                  SizedBox(height: 40),
+
+                  // Sign Up Button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        margin: EdgeInsets.only(left: 35, right: 35),
-                        child: Column(
-                          children: [
-                            // First Name
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white),
-                              ),
-                              child: TextFormField(
-                                controller: _firstNameController,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(15),
-                                  hintText: "First Name",
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: InputBorder.none,
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your first name';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 20),
-
-                            // Last Name
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white),
-                              ),
-                              child: TextFormField(
-                                controller: _lastNameController,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(15),
-                                  hintText: "Last Name",
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: InputBorder.none,
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your last name';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 20),
-
-                            // Email
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white),
-                              ),
-                              child: TextFormField(
-                                controller: _emailController,
-                                style: TextStyle(color: Colors.black),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(15),
-                                  hintText: "Email",
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: InputBorder.none,
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your email';
-                                  } else if (!RegExp(
-                                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-                                      .hasMatch(value)) {
-                                    return 'Please enter a valid email';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 20),
-
-                            // Height (in inches) - Only number input
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white),
-                              ),
-                              child: TextFormField(
-                                controller: _heightController,
-                                style: TextStyle(color: Colors.black),
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(15),
-                                  hintText: "Height (in inches)",
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: InputBorder.none,
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your height';
-                                  } else if (int.tryParse(value) == null) {
-                                    return 'Please enter a valid number for height';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 20),
-
-                            // Weight (in kg) - Only number input
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white),
-                              ),
-                              child: TextFormField(
-                                controller: _weightController,
-                                style: TextStyle(color: Colors.black),
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(15),
-                                  hintText: "Weight (kg)",
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: InputBorder.none,
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your weight';
-                                  } else if (double.tryParse(value) == null) {
-                                    return 'Please enter a valid number for weight';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 20),
-
-                            // Password
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white),
-                              ),
-                              child: TextFormField(
-                                controller: _passwordController,
-                                style: TextStyle(color: Colors.black),
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(15),
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: InputBorder.none,
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your password';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 20),
-
-                            // Confirm Password
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.white),
-                              ),
-                              child: TextFormField(
-                                controller: _confirmPasswordController,
-                                style: TextStyle(color: Colors.black),
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(15),
-                                  hintText: "Confirm Password",
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  border: InputBorder.none,
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please confirm your password';
-                                  } else if (value != _passwordController.text) {
-                                    return 'Passwords do not match';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 40),
-
-                            // Sign Up Button
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Sign Up',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 27,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: Color(0xff4c505b),
-                                  child: IconButton(
-                                    color: Colors.white,
-                                    onPressed: _signUp,
-                                    icon: Icon(Icons.arrow_forward),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 40),
-
-                            // Sign In Link
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, 'login');
-                                  },
-                                  child: Text(
-                                    'Sign In',
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        color: Colors.white,
-                                        fontSize: 18),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                      Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: Colors.deepOrange,
+                          fontSize: 27,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.deepOrange,
+                        child: IconButton(
+                          color: Colors.white,
+                          onPressed: _signUp,
+                          icon: Icon(Icons.arrow_forward),
                         ),
                       ),
                     ],
                   ),
-                ),
+                  SizedBox(height: 40),
+
+                  // Sign In Link
+                  Align(
+                    alignment: Alignment.center,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, 'login');
+                      },
+                      child: Text(
+                        'Already have an account? Sign In',
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.deepOrange,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String hintText,
+      {TextInputType? keyboardType, bool obscureText = false}) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 5, offset: Offset(2, 2)),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        style: TextStyle(color: Colors.black),
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(15),
+          hintText: hintText,
+          hintStyle: TextStyle(color: Colors.grey[600]),
+          border: InputBorder.none,
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter your $hintText';
+          }
+          return null;
+        },
       ),
     );
   }

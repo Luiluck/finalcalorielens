@@ -70,6 +70,12 @@ flutter:
   - assets/Food.gif
   - assets/Avatar.png
   - assets/bgg.jpg
+  - assets/main.jpg
+  - assets/gifmain.gif
+  - assets/bggg.jpg
+  - assets/Food1.jpg
+  - assets/Food2.jpg
+  - assets/Food3.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

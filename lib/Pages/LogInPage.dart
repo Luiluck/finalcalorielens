@@ -20,228 +20,167 @@ class _LogInPageState extends State<LogInPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              height: 400,
-              child: Stack(
-                children: <Widget>[
-                  Positioned(
-                    top: -40,
-                    height: 400,
-                    width: width,
-                    child: FadeInUp(
-                      duration: Duration(seconds: 1),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/BG.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    height: 400,
-                    width: width + 20,
-                    child: FadeInUp(
-                      duration: Duration(milliseconds: 1000),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/BG2.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+      resizeToAvoidBottomInset: true, // Ensures screen adjusts when keyboard appears
+      body: SingleChildScrollView( // Makes the page scrollable
+        child: Container(
+          width: double.infinity, // Take up all available width
+          height: MediaQuery.of(context).size.height, // Make sure the height is the same as the screen height
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/bgg.jpg'), // Set your background image here
+              fit: BoxFit.cover, // Make sure the image covers the entire screen
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  FadeInUp(
-                    duration: Duration(milliseconds: 1500),
-                    child: Text(
-                      "Login",
-                      style: TextStyle(
-                          color: Color.fromRGBO(49, 39, 79, 1),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30),
-                    ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, // Align the content to the start (left)
+              children: [
+                // Centered app logo
+                Container(
+                  padding: EdgeInsets.only(top: 80), // Add top padding to position the logo
+                  child: Center(
+                    child: Image.asset('assets/Avatar.png', width: 100, height: 100), // Centered logo
                   ),
-                  SizedBox(height: 30),
-                  FadeInUp(
-                    duration: Duration(milliseconds: 1700),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
+                ),
+                SizedBox(height: 30),
+                // Add extra space before login form
+                SizedBox(height: 50), // Adjust this value to move the login form lower or higher
+                // Login form container with text fields and button
+                FadeInUp(
+                  duration: Duration(seconds: 1),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        // Title
+                        Text(
+                          'Login',
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(49, 39, 79, 1),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        // Email/Username TextField
+                        TextField(
+                          decoration: InputDecoration(
+                            labelText: 'Email or User Name',
+                            prefixIcon: Icon(Icons.person),
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                              border: Border.all(
-                                  color: Color.fromRGBO(196, 135, 198, .3)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color.fromRGBO(196, 135, 198, .3),
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10),
-                                )
-                              ],
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                // Username TextField
-                                Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          color: Color.fromRGBO(
-                                              196, 135, 198, .3)),
-                                    ),
-                                  ),
-                                  child: TextFormField(
-                                    onChanged: (value) {
-                                      _userEmail = value;
-                                    },
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: "Username",
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey.shade700),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Enter a username';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                // Password TextField
-                                Container(
-                                  padding: EdgeInsets.all(10),
-                                  child: TextFormField(
-                                    obscureText: true,
-                                    onChanged: (value) {
-                                      _userPass = value;
-                                    },
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: "Password",
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey.shade700),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Enter a password';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ],
                             ),
                           ),
-                          SizedBox(height: 20),
-                          FadeInUp(
-                            duration: Duration(milliseconds: 1900),
-                            child: MaterialButton(
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  // Call the UserService login method
-                                  bool success = await userService.login(
-                                    _userEmail,
-                                    _userPass,
-                                  );
-                                  if (success) {
-                                    // Show loading indicator while navigating
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (BuildContext context) {
-                                        return const Center(
-                                          child: CircularProgressIndicator(
-                                            color: Colors.black,
-                                          ),
-                                        );
-                                      },
+                          onChanged: (value) {
+                            _userEmail = value;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        // Password TextField
+                        TextField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            prefixIcon: Icon(Icons.lock),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            _userPass = value;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        // Login Button
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (_userEmail.isNotEmpty && _userPass.isNotEmpty) {
+                              bool success = await userService.login(
+                                _userEmail,
+                                _userPass,
+                              );
+                              if (success) {
+                                // Show loading indicator while navigating
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.black,
+                                      ),
                                     );
-                                    // Delay navigation to demonstrate loading indicator
-                                    await Future.delayed(
-                                        const Duration(seconds: 2));
-                                    // If login is successful, navigate to the main page
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => MainPage()),
-                                    );
-                                  } else {
-                                    // If login fails, display a SnackBar with an error message
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                      content: Text(
-                                          'Invalid email or password'),
-                                      duration: Duration(seconds: 2),
-                                    ));
-                                  }
-                                }
-                              },
+                                  },
+                                );
+                                // Delay navigation to simulate loading
+                                await Future.delayed(const Duration(seconds: 2));
+                                // If login is successful, navigate to MainPage
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MainPage(),
+                                  ),
+                                );
+                              } else {
+                                // Display error message if login fails
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Invalid email or password'),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 80),
+                            backgroundColor: Color.fromRGBO(49, 39, 79, 1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            'Login Now',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        // "Don’t have an account?" text button
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => SignUpPage()),
+                            );
+                          },
+                          child: Text(
+                            "Don't have an account? Signup Now",
+                            style: TextStyle(
                               color: Color.fromRGBO(49, 39, 79, 1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              height: 50,
-                              child: Center(
-                                child: Text(
-                                  "Login",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
                             ),
                           ),
-                          SizedBox(height: 30),
-                          FadeInUp(
-                            duration: Duration(milliseconds: 2000),
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const SignUpPage()),
-                                  );
-                                },
-                                child: const Text(
-                                  'Create Account',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(49, 39, 79, .6)),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: 20),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

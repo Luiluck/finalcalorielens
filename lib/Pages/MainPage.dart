@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 import 'HistoryPage.dart';
 import 'LogInPage.dart';
-import 'ProfilePage.dart'; // Import ProfilePage
+import 'ProfilePage.dart';
+import 'SettingsPage.dart'; // Import your SettingsPage file
+import 'FoodPage.dart'; // Ensure this is imported as well
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -18,6 +20,8 @@ class _MainPageState extends State<MainPage> {
   final List<Map<String, dynamic>> _imageHistory = [];
   bool _isLoading = false;
   String? _lastImagePath;
+
+  final String userName = "Luis Lacuata";
 
   void _addToHistory(String name, String imageUrl, String analysis, DateTime date) {
     setState(() {
@@ -111,14 +115,13 @@ class _MainPageState extends State<MainPage> {
           content: SingleChildScrollView(
             child: Column(
               children: [
-                if (capturedImagePath != null)
-                  Image.file(File(capturedImagePath)),
+                if (capturedImagePath != null) Image.file(File(capturedImagePath)),
                 if (imageUrl != null)
                   Image.network(imageUrl)
                 else
                   const Text('No image available from the server'),
-                const Text('Estimated or close to target calories'),
-                Text('Analysis: $analysis'),
+                const SizedBox(height: 10),
+                Text('Analysis: $analysis', style: const TextStyle(fontWeight: FontWeight.bold)),
                 Text('Nutrition Information: $nutrition'),
               ],
             ),
@@ -141,30 +144,13 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
-        elevation: 0,
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: AssetImage('assets/Avatar.png'),
-              radius: 23,
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              'Luisito Lacuata',
-              style: TextStyle(color: Colors.black),
-            ),
-          ],
-        ),
-      ),
       drawer: Drawer(
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color(0xff607D8B),
-                Color(0xff455A64),
+                Color(0xfff2f2f2),
+                Color(0xffe0e0e0),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -174,26 +160,15 @@ class _MainPageState extends State<MainPage> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Menu',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                      ),
-                    ),
-                  ],
+                decoration: BoxDecoration(color: Colors.transparent),
+                child: Text(
+                  'Menu',
+                  style: TextStyle(color: Colors.black, fontSize: 30),
                 ),
               ),
               ListTile(
-                leading: const Icon(Icons.history, color: Colors.white),
-                title: const Text('History', style: TextStyle(color: Colors.white)),
+                leading: const Icon(Icons.history, color: Colors.black),
+                title: const Text('History', style: TextStyle(color: Colors.black)),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -207,46 +182,14 @@ class _MainPageState extends State<MainPage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.person, color: Colors.white), // Icon for Profile
-                title: const Text('Profile', style: TextStyle(color: Colors.white)), // Text for Profile
+                leading: const Icon(Icons.person, color: Colors.black),
+                title: const Text('Profile', style: TextStyle(color: Colors.black)),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ProfilePage(), // Navigate to ProfilePage
+                      builder: (context) => const ProfilePage(),
                     ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout, color: Colors.white),
-                title: const Text('Logout', style: TextStyle(color: Colors.white)),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Log Out?'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('No'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          TextButton(
-                            child: const Text('Yes'),
-                            onPressed: () {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(builder: (context) => const LogInPage()),
-                                    (Route<dynamic> route) => false,
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    },
                   );
                 },
               ),
@@ -254,74 +197,238 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.white, Colors.tealAccent],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-          ),
-          if (_isLoading)
-            const Center(child: CircularProgressIndicator()),
-          if (!_isLoading)
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 250,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 2),
-                      borderRadius: BorderRadius.circular(8),
-                      image: DecorationImage(
-                        image: AssetImage('assets/Food.gif') as ImageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                ],
-              ),
-            ),
-          Positioned(
-            bottom: 20.0,
-            left: 0,
-            right: 0,
-            child: Column(
-              children: [
-                Container(
-                  height: 2,
-                  width: double.infinity,
-                  color: Colors.black,
+      body: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if (details.primaryVelocity! < 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FoodPage()), // Navigate to FoodPage on swipe left
+            );
+          }
+        },
+        child: Stack(
+          children: [
+            // Background decoration
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xfff2f2f2), Color(0xffe0e0e0)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+              ),
+            ),
+            // Loading indicator
+            if (_isLoading) const Center(child: CircularProgressIndicator()),
+            // Main content
+            if (!_isLoading)
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        _pickImage(context, ImageSource.camera);
-                      },
-                      icon: const Icon(Icons.camera_alt, size: 40),
+                    Container(
+                      width: 220,
+                      height: 220,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xfff2f2f2), Color(0xffA8BBA2)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 6,
+                            spreadRadius: 2,
+                            offset: Offset(2, 3),
+                          ),
+                        ],
+                      ),
+                      child: Image.asset('assets/Food.gif', fit: BoxFit.cover),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        _pickImage(context, ImageSource.gallery);
-                      },
-                      icon: const Icon(Icons.photo_album, size: 40),
+                    const SizedBox(height: 15),
+                    const Text(
+                      'Snap Your Food!',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Get nutritional insights instantly.',
+                      style: TextStyle(color: Colors.black54),
                     ),
                   ],
                 ),
-              ],
+              ),
+            // Positioned profile circle avatar with name
+            Positioned(
+              top: 20.0,
+              left: 10.0,
+              child: Container(
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      blurRadius: 6,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfilePage(),
+                          ),
+                        );
+                      },
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage('assets/Avatar.png'),
+                        radius: 20,
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfilePage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        userName,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 2.0,
+                              color: Colors.black.withOpacity(0.2),
+                              offset: Offset(1, 1),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
+            // Positioned settings button at top-right corner
+            Positioned(
+              top: 20.0,
+              right: 10.0,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(), // Navigate to the SettingsPage
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xfff2f2f2), Color(0xffA8BBA2)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 6,
+                        spreadRadius: 2,
+                        offset: Offset(2, 3),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.settings,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+            // Positioned bottom action buttons
+            Positioned(
+              bottom: 30,
+              left: 20,
+              right: 20,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Color(0xffA8BBA2),
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      spreadRadius: 2,
+                      offset: const Offset(2, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => _pickImage(context, ImageSource.camera),
+                      child: const Text('Camera'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffd3d3d3),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HistoryPage(
+                            imageHistory: _imageHistory,
+                            onDelete: _deleteFromHistory,
+                          ),
+                        ),
+                      ),
+                      child: const Text('History'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffd3d3d3),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => _pickImage(context, ImageSource.gallery),
+                      child: const Text('Gallery'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffd3d3d3),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
