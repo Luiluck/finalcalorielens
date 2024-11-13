@@ -1,5 +1,5 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'FoodRecipe.dart'; // Import the FoodRecipePage
 
 class FoodPage extends StatelessWidget {
   @override
@@ -82,20 +82,23 @@ class FoodPage extends StatelessWidget {
                         children: <Widget>[
                           _foodCard(
                             context,
-                            'Grilled Chicken',
-                            'assets/Food1.jpg',
+                            'Kaldereta',
+                            'assets/Kaldereta.jpg',
+                            'A rich beef stew made with tomato sauce, potatoes, carrots, and other ingredients.',
                           ),
                           SizedBox(width: 10.0),
                           _foodCard(
                             context,
-                            'Pasta Primavera',
-                            'assets/Food2.jpg',
+                            'Bicol Express',
+                            'assets/BicolExpress.jpg',
+                            'A spicy dish from Bicol, made with pork, shrimp paste, coconut milk, and chilies.',
                           ),
                           SizedBox(width: 10.0),
                           _foodCard(
                             context,
-                            'Vegan Salad',
-                            'assets/Food3.jpg',
+                            'Pork Adobo',
+                            'assets/PorkAdobo.jpg',
+                            'A popular Filipino dish made from pork marinated in soy sauce, vinegar, garlic, and spices.',
                           ),
                           SizedBox(width: 10.0),
                         ],
@@ -182,12 +185,19 @@ class FoodPage extends StatelessWidget {
   }
 
   // Food card widget with click functionality
-  Widget _foodCard(BuildContext context, String foodName, String imagePath) {
+  Widget _foodCard(BuildContext context, String foodName, String imagePath, String recipeDetails) {
     return GestureDetector(
       onTap: () {
-        // Action when food card is tapped, e.g., navigate to details page
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Clicked on $foodName')),
+        // Navigate to the FoodRecipePage with the selected food details
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FoodRecipe(
+              foodName: foodName,
+              foodImage: imagePath,
+              recipeDetails: recipeDetails,
+            ),
+          ),
         );
       },
       child: Container(

@@ -33,6 +33,7 @@ dependencies:
   http: ^1.2.1
   permission_handler: ^11.3.1
   animate_do: ^3.1.2
+  intl: ^0.18.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -76,6 +77,9 @@ flutter:
   - assets/Food1.jpg
   - assets/Food2.jpg
   - assets/Food3.jpg
+  - assets/Kaldereta.jpg
+  - assets/PorkAdobo.jpg
+  - assets/BicolExpress.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

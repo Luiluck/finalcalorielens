@@ -67,9 +67,8 @@ class _MainPageState extends State<MainPage> {
         final analysisData = jsonDecode(responseBody);
         final analysis = analysisData['Analysis']?.toString() ?? 'No analysis available';
         final imageUrl = analysisData['imageUrl'];
-        final nutrition = analysisData['nutrition']?.toString() ?? 'No nutrition information available';
 
-        _showAnalysisDialog(context, imageUrl, analysis, nutrition, _lastImagePath);
+        _showAnalysisDialog(context, imageUrl, analysis, _lastImagePath);
 
         if (imageUrl != null) {
           _addToHistory('Analysis Result', imageUrl, analysis, DateTime.now());
@@ -106,7 +105,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  void _showAnalysisDialog(BuildContext context, String? imageUrl, String analysis, String nutrition, String? capturedImagePath) {
+  void _showAnalysisDialog(BuildContext context, String? imageUrl, String analysis, String? capturedImagePath) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -122,7 +121,6 @@ class _MainPageState extends State<MainPage> {
                   const Text('No image available from the server'),
                 const SizedBox(height: 10),
                 Text('Analysis: $analysis', style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text('Nutrition Information: $nutrition'),
               ],
             ),
           ),
@@ -324,42 +322,61 @@ class _MainPageState extends State<MainPage> {
                 ),
               ),
             ),
-            // Positioned settings button at top-right corner
+            // Positioned settings button at top-right corner with PopupMenuButton
             Positioned(
               top: 20.0,
               right: 10.0,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsPage(), // Navigate to the SettingsPage
-                    ),
-                  );
+              child: PopupMenuButton<String>(
+                onSelected: (String value) {
+                  switch (value) {
+                    case 'Change Password':
+                    // Navigate to ChangePasswordPage
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ChangePasswordPage(), // Navigate to ChangePasswordPage
+                        ),
+                      );
+                      break;
+                    case 'Edit Profile':
+                    // Navigate to Edit Profile page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EditProfilePage(), // Navigate to EditProfilePage
+                        ),
+                      );
+                      break;
+                    case 'Log Out':
+                    // Implement log out functionality
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LogInPage(), // Navigate to LogInPage on logout
+                        ),
+                      );
+                      break;
+                  }
                 },
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xfff2f2f2), Color(0xffA8BBA2)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                itemBuilder: (BuildContext context) {
+                  return [
+                    const PopupMenuItem<String>(
+                      value: 'Change Password',
+                      child: Text('Change Password'),
                     ),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 6,
-                        spreadRadius: 2,
-                        offset: Offset(2, 3),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.settings,
-                    color: Colors.black,
-                  ),
+                    const PopupMenuItem<String>(
+                      value: 'Edit Profile',
+                      child: Text('Edit Profile'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Log Out',
+                      child: Text('Log Out'),
+                    ),
+                  ];
+                },
+                icon: const Icon(
+                  Icons.settings,
+                  color: Colors.black,
                 ),
               ),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Import for date formatting
 
 class HistoryPage extends StatefulWidget {
   final List<Map<String, dynamic>> imageHistory;
@@ -11,6 +12,13 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  // Function to format the date nicely
+  String _formatDate(DateTime date) {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
+    return formatter.format(date);
+  }
+
+  // Function to show the delete confirmation dialog
   void _showDeleteConfirmationDialog(BuildContext context, int index) {
     showDialog(
       context: context,
@@ -46,22 +54,24 @@ class _HistoryPageState extends State<HistoryPage> {
       appBar: AppBar(
         title: const Text(
           'History',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold), // Bold and white title
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.green, // Set AppBar background to black
-        elevation: 0, // Remove shadow under the AppBar
-        leading: IconButton( // White back button
-          icon: const Icon(Icons.arrow_back, color: Colors.white), // White arrow icon
+        backgroundColor: Colors.green,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context); // Navigate back when pressed
+            Navigator.pop(context);
           },
         ),
       ),
-      body: Container(
+      body: widget.imageHistory.isEmpty
+          ? const Center(child: Text("No history available"))
+          : Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/wallpaper1.jpg'), // Replace with your image path
-            fit: BoxFit.cover, // Cover the entire container
+            image: AssetImage('assets/wallpaper1.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         child: ListView.builder(
@@ -69,42 +79,46 @@ class _HistoryPageState extends State<HistoryPage> {
           itemBuilder: (context, index) {
             final item = widget.imageHistory[index];
             return Card(
-              color: Colors.white, // Card background color
+              color: Colors.white,
               child: ListTile(
                 leading: Image.network(item['imagePath']),
                 title: Text(
                   item['name'],
-                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold), // Bold and black title
+                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Date: ${item['date']}',
-                      style: const TextStyle(color: Colors.black), // Black text for date
+                      'Date: ${_formatDate(item['date'])}',
+                      style: const TextStyle(color: Colors.black),
                     ),
                     Text(
                       'Analysis: ${item['analysis']}',
-                      style: const TextStyle(color: Colors.black), // Black text for analysis
+                      style: const TextStyle(color: Colors.black),
                     ),
                   ],
                 ),
                 trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red), // Red delete icon
+                  icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () => _showDeleteConfirmationDialog(context, index),
                 ),
                 onTap: () {
+                  // Show the analysis details in a dialog when tapped
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text(item['name'], style: const TextStyle(fontWeight: FontWeight.bold)), // Bold title in dialog
+                        title: Text(item['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
                         content: SingleChildScrollView(
                           child: Column(
                             children: [
+                              // Display image
                               Image.network(item['imagePath']),
-                              Text('Date: ${item['date']}', style: const TextStyle(color: Colors.black)), // Black text for date
-                              Text('Analysis: ${item['analysis']}', style: const TextStyle(color: Colors.black)), // Black text for analysis
+                              // Display date
+                              Text('Date: ${_formatDate(item['date'])}', style: const TextStyle(color: Colors.black)),
+                              // Display analysis
+                              Text('Analysis: ${item['analysis']}', style: const TextStyle(color: Colors.black)),
                             ],
                           ),
                         ),
