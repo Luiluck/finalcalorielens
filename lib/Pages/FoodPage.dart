@@ -131,7 +131,7 @@ class FoodPage extends StatelessWidget {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0),
                         image: DecorationImage(
-                            image: AssetImage('assets/Food2.jpg'),
+                            image: AssetImage('assets/SinigangB.jpg'),
                             fit: BoxFit.cover)),
                   ),
                 ),
@@ -143,7 +143,7 @@ class FoodPage extends StatelessWidget {
                       style: TextStyle(
                         fontFamily: 'Timesroman',
                         fontSize: 22.0,
-                        color: Colors.black,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

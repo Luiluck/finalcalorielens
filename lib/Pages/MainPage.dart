@@ -44,34 +44,34 @@ class _MainPageState extends State<MainPage> {
     final pickedImage = await ImagePicker().pickImage(source: source);
     if (pickedImage == null) return;
     final File imageFile = File(pickedImage.path);
-    _lastImagePath = imageFile.path;
+    _lastImagePath = imageFile.path;  // Make sure this path is assigned correctly.
     await _sendImageToBackend(context, imageFile);
   }
+
 
   Future<void> _sendImageToBackend(BuildContext context, File imageFile) async {
     setState(() {
       _isLoading = true;
     });
-
     var request = http.MultipartRequest(
       'POST',
       Uri.parse('https://us-central1-soilproject-91ac2.cloudfunctions.net/app/api/v1/upload'),
     );
     request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-
     try {
       var response = await request.send();
       final responseBody = await response.stream.transform(utf8.decoder).join();
-
       if (response.statusCode == 200) {
         final analysisData = jsonDecode(responseBody);
         final analysis = analysisData['Analysis']?.toString() ?? 'No analysis available';
         final imageUrl = analysisData['imageUrl'];
-
+        // Show the analysis dialog
         _showAnalysisDialog(context, imageUrl, analysis, _lastImagePath);
-
+        // Add to history: If imageUrl is not null, use it; otherwise, use the local file path
         if (imageUrl != null) {
           _addToHistory('Analysis Result', imageUrl, analysis, DateTime.now());
+        } else {
+          _addToHistory('Captured Image', _lastImagePath!, analysis, DateTime.now());
         }
       } else {
         _showErrorDialog(context, 'Failed to upload image');

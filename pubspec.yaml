@@ -80,6 +80,8 @@ flutter:
   - assets/Kaldereta.jpg
   - assets/PorkAdobo.jpg
   - assets/BicolExpress.jpg
+  - assets/Sinigang.jpg
+  - assets/SinigangB.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
