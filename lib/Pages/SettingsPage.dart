@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../Service/ChangePassword.dart';
+
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -13,7 +15,6 @@ class SettingsPage extends StatelessWidget {
       MaterialPageRoute(builder: (context) => const EditProfilePage()),
     );
   }
-
   // Navigate to Change Password page
   void _goToChangePassword(BuildContext context) {
     Navigator.push(
@@ -59,7 +60,6 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
-
 // Edit Profile Page
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -96,7 +96,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       });
     }
   }
-
   void _saveProfileChanges() {
     // Implement saving changes logic here
     print('Profile updated with: ${_nameController.text}, ${_emailController.text}');
@@ -108,97 +107,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       appBar: AppBar(
         title: const Text('Edit Profile'),
         backgroundColor: const Color(0xffA8BBA2),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: _pickImage,
-                child: CircleAvatar(
-                  backgroundImage: _avatarImage != null ? FileImage(_avatarImage!) : AssetImage('assets/Avatar.png') as ImageProvider,
-                  radius: 50,
-                  child: _avatarImage == null ? Icon(Icons.camera_alt, size: 30) : null,
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _weightController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Weight (kg)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _heightController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Height (inches)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: _calculateBMI,
-                child: const Text('Update BMI'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xffA8BBA2),
-                ),
-              ),
-              if (_bmi > 0)
-                Text(
-                  'Updated BMI: ${_bmi.toStringAsFixed(2)}',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveProfileChanges,
-                child: const Text('Save Changes'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xffA8BBA2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Change Password Page
-class ChangePasswordPage extends StatelessWidget {
-  const ChangePasswordPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Change Password'),
-        backgroundColor: const Color(0xffA8BBA2), // Use the same color as in your profile page
       ),
       body: Stack(
         children: [
@@ -215,48 +123,97 @@ class ChangePasswordPage extends StatelessWidget {
           // Form inside padding
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView( // Use SingleChildScrollView for small screens
+            child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    'Change your password:',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Stack(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: _avatarImage != null
+                            ? FileImage(_avatarImage!)
+                            : const AssetImage('assets/Avatar.png') as ImageProvider,
+                        radius: 50,
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: _pickImage,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.all(6),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              size: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    obscureText: true,
+                    controller: _nameController,
                     decoration: const InputDecoration(
-                      labelText: 'Old Password',
+                      labelText: 'Name',
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   TextField(
-                    obscureText: true,
+                    controller: _emailController,
                     decoration: const InputDecoration(
-                      labelText: 'New Password',
+                      labelText: 'Email',
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   TextField(
-                    obscureText: true,
+                    controller: _weightController,
+                    keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
-                      labelText: 'Confirm New Password',
+                      labelText: 'Weight (kg)',
                       border: OutlineInputBorder(),
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _heightController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Height (inches)',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  if (_bmi > 0)
+                    Text(
+                      'Updated BMI: ${_bmi.toStringAsFixed(2)}',
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {
-                      // Add password change logic here
-                      Navigator.pop(context); // Placeholder for actual logic
-                    },
-                    child: const Text('Change Password'),
+                    onPressed: _saveProfileChanges,
+                    child: const Text(
+                      'Save Changes',
+                      style: TextStyle(color: Colors.black), // Save Changes text in black
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffA8BBA2),
-                      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 40.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
                   ),
                 ],
@@ -268,3 +225,171 @@ class ChangePasswordPage extends StatelessWidget {
     );
   }
 }
+// // Change Password Page
+// class _ChangePasswordPageState extends State<ChangePasswordPage> {
+//   final _formKey = GlobalKey<FormState>();
+//   final TextEditingController _currentPasswordController = TextEditingController();
+//   final TextEditingController _newPasswordController = TextEditingController();
+//   final TextEditingController _confirmPasswordController = TextEditingController();
+//
+//   // Function to show a message to the user
+//   void _showMessage(BuildContext context, String message, {bool isError = false}) {
+//     final snackBar = SnackBar(
+//       content: Text(
+//         message,
+//         style: TextStyle(color: isError ? Colors.red : Colors.white),
+//       ),
+//       backgroundColor: isError ? Colors.red[300] : Colors.green[300],
+//     );
+//     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+//   }
+//
+//   // Function to handle change password logic
+//   void _changePassword() {
+//     if (_formKey.currentState!.validate()) {
+//       final currentPassword = _currentPasswordController.text.trim();
+//       final newPassword = _newPasswordController.text.trim();
+//       final confirmPassword = _confirmPasswordController.text.trim();
+//
+//       if (newPassword != confirmPassword) {
+//         _showMessage(context, "New passwords do not match.", isError: true);
+//         return;
+//       }
+//
+//       // Simulate password change logic (e.g., calling API)
+//       Future.delayed(const Duration(seconds: 1), () {
+//         _showMessage(context, "Password changed successfully.");
+//         Navigator.pop(context); // Navigate back after success
+//       });
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               Text(
+//                 'Change Password',
+//                 style: TextStyle(
+//                   fontWeight: FontWeight.w500,
+//                   fontSize: 24,
+//                 ),
+//               )
+//             ]),
+//       ),
+//       body: Container(
+//         decoration: const BoxDecoration(
+//           image: DecorationImage(
+//             image: AssetImage('lib/img/login_screen.jpg'),
+//             fit: BoxFit.cover,
+//           ),
+//         ),
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           crossAxisAlignment: CrossAxisAlignment.center,
+//           children: [
+//             Form(
+//               key: _formKey, // Attach the form key for validation
+//               child: Column(
+//                 children: [
+//                   const Padding(
+//                     padding: EdgeInsets.symmetric(horizontal: 10),
+//                     child: Text(
+//                       'Change your password',
+//                       textAlign: TextAlign.center,
+//                       style: TextStyle(fontSize: 18),
+//                     ),
+//                   ),
+//                   const SizedBox(height: 20),
+//                   // Current Password
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 35),
+//                     child: TextFormField(
+//                       controller: _currentPasswordController,
+//                       keyboardType: TextInputType.visiblePassword,
+//                       obscureText: true,
+//                       decoration: const InputDecoration(
+//                         labelText: 'Current Password',
+//                         border: OutlineInputBorder(),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Please enter your current password';
+//                         }
+//                         return null;
+//                       },
+//                     ),
+//                   ),
+//                   const SizedBox(height: 20),
+//                   // New Password
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 35),
+//                     child: TextFormField(
+//                       controller: _newPasswordController,
+//                       keyboardType: TextInputType.visiblePassword,
+//                       obscureText: true,
+//                       decoration: const InputDecoration(
+//                         labelText: 'New Password',
+//                         border: OutlineInputBorder(),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Please enter a new password';
+//                         }
+//                         if (value.length < 6) {
+//                           return 'Password must be at least 6 characters';
+//                         }
+//                         return null;
+//                       },
+//                     ),
+//                   ),
+//                   const SizedBox(height: 20),
+//                   // Confirm New Password
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 35),
+//                     child: TextFormField(
+//                       controller: _confirmPasswordController,
+//                       keyboardType: TextInputType.visiblePassword,
+//                       obscureText: true,
+//                       decoration: const InputDecoration(
+//                         labelText: 'Confirm New Password',
+//                         border: OutlineInputBorder(),
+//                       ),
+//                       validator: (value) {
+//                         if (value == null || value.isEmpty) {
+//                           return 'Please confirm your new password';
+//                         }
+//                         if (value != _newPasswordController.text) {
+//                           return 'Passwords do not match';
+//                         }
+//                         return null;
+//                       },
+//                     ),
+//                   ),
+//                   const SizedBox(height: 20),
+//                   // Change Password Button
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 35),
+//                     child: MaterialButton(
+//                       minWidth: double.infinity,
+//                       onPressed: _changePassword,
+//                       shape: RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(30),
+//                       ),
+//                       color: Colors.green,
+//                       textColor: Colors.white,
+//                       child: const Text('Change Password'),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

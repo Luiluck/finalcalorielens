@@ -63,12 +63,6 @@ class _ProfilePageState extends State<ProfilePage> {
             Navigator.of(context).pop();
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _showLogoutConfirmationDialog,
-          ),
-        ],
       ),
       body: Stack(
         children: [

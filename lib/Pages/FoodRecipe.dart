@@ -83,90 +83,106 @@ class _FoodRecipeState extends State<FoodRecipe> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.foodName), // Display food name in the AppBar
-        backgroundColor: Colors.orange,
+        backgroundColor: const Color(0xffA8BBA2), // Mint color background for the AppBar
         elevation: 0,
+        automaticallyImplyLeading: true, // Keeps the default back arrow button
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            // Display food image at the top
-            Container(
-              height: 250.0,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(widget.foodImage), // Display food image
-                  fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          // Background with gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xfff7f7f7), Color(0xffd6e4d9)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
+          // Food recipe content
+          SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                // Display food image at the top
+                Container(
+                  height: 250.0,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(widget.foodImage), // Display food image
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(height: 20.0),
+                // Display food details (name and description)
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      // Food name
+                      Text(
+                        widget.foodName,
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      // Recipe description/details
+                      Text(
+                        widget.recipeDetails,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                // Ingredients section
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "Ingredients",
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      // Display ingredients dynamically
+                      for (var ingredient in currentIngredients)
+                        Text(
+                          "- $ingredient",
+                          style: TextStyle(fontSize: 16.0, color: Colors.grey.shade700),
+                        ),
+                      SizedBox(height: 20.0),
+                      Text(
+                        "Instructions",
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      // Display instructions dynamically
+                      for (var instruction in currentInstructions)
+                        Text(
+                          instruction,
+                          style: TextStyle(fontSize: 16.0, color: Colors.grey.shade700),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 20.0),
-            // Display food details (name and description)
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  // Food name
-                  Text(
-                    widget.foodName,
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  // Recipe description/details
-                  Text(
-                    widget.recipeDetails,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20.0),
-            // Ingredients section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Ingredients",
-                    style: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  // Display ingredients dynamically
-                  for (var ingredient in currentIngredients)
-                    Text(
-                      "- $ingredient",
-                      style: TextStyle(fontSize: 16.0, color: Colors.grey.shade700),
-                    ),
-                  SizedBox(height: 20.0),
-                  Text(
-                    "Instructions",
-                    style: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  // Display instructions dynamically
-                  for (var instruction in currentInstructions)
-                    Text(
-                      instruction,
-                      style: TextStyle(fontSize: 16.0, color: Colors.grey.shade700),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

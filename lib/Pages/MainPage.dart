@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'HistoryPage.dart';
-import 'LogInPage.dart';
+import '../Service/ChangePassword.dart';
 import 'ProfilePage.dart';
-import 'SettingsPage.dart'; // Import your SettingsPage file
-import 'FoodPage.dart'; // Ensure this is imported as well
+import 'EditProfilePage.dart';
+import 'HistoryPage.dart';
+import 'FoodPage.dart';
+import 'LogInPage.dart';
+
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -20,7 +22,6 @@ class _MainPageState extends State<MainPage> {
   final List<Map<String, dynamic>> _imageHistory = [];
   bool _isLoading = false;
   String? _lastImagePath;
-
   final String userName = "Luis Lacuata";
 
   void _addToHistory(String name, String imageUrl, String analysis, DateTime date) {
@@ -44,10 +45,9 @@ class _MainPageState extends State<MainPage> {
     final pickedImage = await ImagePicker().pickImage(source: source);
     if (pickedImage == null) return;
     final File imageFile = File(pickedImage.path);
-    _lastImagePath = imageFile.path;  // Make sure this path is assigned correctly.
+    _lastImagePath = imageFile.path;  // Assign image path correctly
     await _sendImageToBackend(context, imageFile);
   }
-
 
   Future<void> _sendImageToBackend(BuildContext context, File imageFile) async {
     setState(() {
@@ -141,70 +141,17 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Drawer(
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xfff2f2f2),
-                Color(0xffe0e0e0),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              const DrawerHeader(
-                decoration: BoxDecoration(color: Colors.transparent),
-                child: Text(
-                  'Menu',
-                  style: TextStyle(color: Colors.black, fontSize: 30),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.history, color: Colors.black),
-                title: const Text('History', style: TextStyle(color: Colors.black)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HistoryPage(
-                        imageHistory: _imageHistory,
-                        onDelete: _deleteFromHistory,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.person, color: Colors.black),
-                title: const Text('Profile', style: TextStyle(color: Colors.black)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ProfilePage(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: GestureDetector(
-        onHorizontalDragEnd: (details) {
-          if (details.primaryVelocity! < 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FoodPage()), // Navigate to FoodPage on swipe left
-            );
-          }
-        },
-        child: Stack(
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        if (details.primaryVelocity! < 0) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => FoodPage()), // Navigate to FoodPage on swipe left
+          );
+        }
+      },
+      child: Scaffold(
+        body: Stack(
           children: [
             // Background decoration
             Container(
@@ -330,29 +277,26 @@ class _MainPageState extends State<MainPage> {
                 onSelected: (String value) {
                   switch (value) {
                     case 'Change Password':
-                    // Navigate to ChangePasswordPage
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ChangePasswordPage(), // Navigate to ChangePasswordPage
+                          builder: (context) => const ChangePasswordPage(),
                         ),
                       );
                       break;
                     case 'Edit Profile':
-                    // Navigate to Edit Profile page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const EditProfilePage(), // Navigate to EditProfilePage
+                          builder: (context) => const EditProfilePage(),
                         ),
                       );
                       break;
                     case 'Log Out':
-                    // Implement log out functionality
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const LogInPage(), // Navigate to LogInPage on logout
+                          builder: (context) => const LogInPage(),
                         ),
                       );
                       break;
@@ -374,13 +318,8 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ];
                 },
-                icon: const Icon(
-                  Icons.settings,
-                  color: Colors.black,
-                ),
               ),
             ),
-            // Positioned bottom action buttons
             Positioned(
               bottom: 30,
               left: 20,
