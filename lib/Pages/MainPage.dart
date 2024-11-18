@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import '../Service/ChangePassword.dart';
 import 'ProfilePage.dart';
-import 'EditProfilePage.dart';
+// import 'EditProfilePage.dart';
 import 'HistoryPage.dart';
 import 'FoodPage.dart';
 import 'LogInPage.dart';
@@ -118,7 +118,7 @@ class _MainPageState extends State<MainPage> {
                 if (imageUrl != null)
                   Image.network(imageUrl)
                 else
-                  const Text('No image available from the server'),
+                  const Text('Picture Here'),
                 const SizedBox(height: 10),
                 Text('Analysis: $analysis', style: const TextStyle(fontWeight: FontWeight.bold)),
               ],
@@ -283,14 +283,14 @@ class _MainPageState extends State<MainPage> {
                           builder: (context) => const ChangePasswordPage(),
                         ),
                       );
-                      break;
-                    case 'Edit Profile':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const EditProfilePage(),
-                        ),
-                      );
+                    //   break;
+                    // case 'Edit Profile':
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => const EditProfilePage(),
+                    //     ),
+                    //   );
                       break;
                     case 'Log Out':
                       Navigator.pushReplacement(
@@ -307,10 +307,6 @@ class _MainPageState extends State<MainPage> {
                     const PopupMenuItem<String>(
                       value: 'Change Password',
                       child: Text('Change Password'),
-                    ),
-                    const PopupMenuItem<String>(
-                      value: 'Edit Profile',
-                      child: Text('Edit Profile'),
                     ),
                     const PopupMenuItem<String>(
                       value: 'Log Out',

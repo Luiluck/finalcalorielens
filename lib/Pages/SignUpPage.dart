@@ -45,7 +45,7 @@ class _SignUpPageState extends State<SignUpPage> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          iconTheme: IconThemeData(color: Colors.deepOrange),
+          iconTheme: IconThemeData(color: Colors.black),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -62,7 +62,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   Text(
                     'Get Started\nwith Delicious Food!',
                     style: TextStyle(
-                      color: Colors.deepOrange,
+                      color: Colors.black,
                       fontSize: 33,
                       fontWeight: FontWeight.bold,
                     ),
@@ -86,14 +86,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       Text(
                         'Sign Up',
                         style: TextStyle(
-                          color: Colors.deepOrange,
+                          color: Colors.black,
                           fontSize: 27,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       CircleAvatar(
                         radius: 30,
-                        backgroundColor: Colors.deepOrange,
+                        backgroundColor: Colors.black,
                         child: IconButton(
                           color: Colors.white,
                           onPressed: _signUp,
@@ -115,7 +115,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         'Already have an account? Sign In',
                         style: TextStyle(
                           decoration: TextDecoration.underline,
-                          color: Colors.deepOrange,
+                          color: Colors.black,
                           fontSize: 15,
                         ),
                       ),

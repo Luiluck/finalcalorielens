@@ -101,16 +101,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         title: const Text('Change Password',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 24)),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          decoration: const BoxDecoration(
-            color: Colors.white, // Background color for better readability
-            image: DecorationImage(
-              image: AssetImage('lib/img/login_screen.jpg'),
-              fit: BoxFit.cover,
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,  // Full screen height
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xfff7f7f7), Color(0xffd6e4d9)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
+        ),
+        child: SingleChildScrollView(
           child: Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 35.0),

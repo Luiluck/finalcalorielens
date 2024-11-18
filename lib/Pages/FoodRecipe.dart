@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FoodRecipe extends StatefulWidget {
-  // Define the required parameters
   final String foodName;
   final String foodImage;
   final String recipeDetails;
 
-  // Constructor to accept parameters
   const FoodRecipe({
     Key? key,
     required this.foodName,
@@ -19,7 +18,6 @@ class FoodRecipe extends StatefulWidget {
 }
 
 class _FoodRecipeState extends State<FoodRecipe> {
-  // Sample ingredients and instructions for the recipes
   final Map<String, List<String>> ingredients = {
     'Kaldereta': [
       "1 lb of beef",
@@ -46,6 +44,19 @@ class _FoodRecipeState extends State<FoodRecipe> {
       "1 tsp black peppercorns",
       "1 tbsp brown sugar",
       "Salt to taste"
+    ],
+    'Pork Sinigang': [
+      "1 lb pork belly or ribs",
+      "1 onion, quartered",
+      "2 tomatoes, quartered",
+      "1 radish, sliced",
+      "1 eggplant, sliced",
+      "1 pack of tamarind paste or fresh tamarind",
+      "1 bundle of kangkong (water spinach)",
+      "2 long green beans, sliced",
+      "1-2 chili peppers (optional)",
+      "Salt and fish sauce to taste",
+      "Water (about 6 cups)"
     ]
   };
 
@@ -71,22 +82,25 @@ class _FoodRecipeState extends State<FoodRecipe> {
       "3. Cook the pork mixture over medium heat until the pork is tender.",
       "4. Add brown sugar and cook until the sauce reduces.",
       "5. Season with salt to taste and serve with rice."
+    ],
+    'Pork Sinigang': [
+      "1. In a large pot, boil the pork belly or ribs with water and onions.",
+      "2. Add tomatoes and cook until soft.",
+      "3. Add the tamarind paste or fresh tamarind and stir.",
+      "4. Add radish, eggplant, green beans, and chili peppers.",
+      "5. Let it simmer for about 30 minutes or until the pork is tender.",
+      "6. Add the kangkong (water spinach) and cook for another 5 minutes.",
+      "7. Season with salt and fish sauce to taste.",
+      "8. Serve hot with steamed rice."
     ]
   };
 
   @override
   Widget build(BuildContext context) {
-    // Get the current recipe's ingredients and instructions
     List<String> currentIngredients = ingredients[widget.foodName] ?? [];
     List<String> currentInstructions = instructions[widget.foodName] ?? [];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.foodName), // Display food name in the AppBar
-        backgroundColor: const Color(0xffA8BBA2), // Mint color background for the AppBar
-        elevation: 0,
-        automaticallyImplyLeading: true, // Keeps the default back arrow button
-      ),
       body: Stack(
         children: [
           // Background with gradient
@@ -103,12 +117,24 @@ class _FoodRecipeState extends State<FoodRecipe> {
           SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                // Display food image at the top
+                // Add a border and shadow around the food image
                 Container(
                   height: 250.0,
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0), // Rounded corners
+                    border: Border.all(
+                      color: Colors.blueGrey.shade300, // Border color
+                      width: 4.0, // Border thickness
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2), // Shadow color
+                        blurRadius: 8.0, // Shadow blur
+                        offset: Offset(0, 4), // Shadow position
+                      ),
+                    ],
                     image: DecorationImage(
-                      image: AssetImage(widget.foodImage), // Display food image
+                      image: AssetImage(widget.foodImage),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -123,16 +149,17 @@ class _FoodRecipeState extends State<FoodRecipe> {
                       // Food name
                       Text(
                         widget.foodName,
-                        style: TextStyle(
-                          fontSize: 24.0,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 28.0,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 10.0),
                       // Recipe description/details
                       Text(
                         widget.recipeDetails,
-                        style: TextStyle(
+                        style: GoogleFonts.roboto(
                           fontSize: 16.0,
                           color: Colors.grey.shade600,
                         ),
@@ -149,9 +176,10 @@ class _FoodRecipeState extends State<FoodRecipe> {
                     children: <Widget>[
                       Text(
                         "Ingredients",
-                        style: TextStyle(
+                        style: GoogleFonts.playfairDisplay(
                           fontSize: 22.0,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 10.0),
@@ -159,14 +187,18 @@ class _FoodRecipeState extends State<FoodRecipe> {
                       for (var ingredient in currentIngredients)
                         Text(
                           "- $ingredient",
-                          style: TextStyle(fontSize: 16.0, color: Colors.grey.shade700),
+                          style: GoogleFonts.roboto(
+                            fontSize: 16.0,
+                            color: Colors.grey.shade700,
+                          ),
                         ),
                       SizedBox(height: 20.0),
                       Text(
                         "Instructions",
-                        style: TextStyle(
+                        style: GoogleFonts.playfairDisplay(
                           fontSize: 22.0,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 10.0),
@@ -174,12 +206,31 @@ class _FoodRecipeState extends State<FoodRecipe> {
                       for (var instruction in currentInstructions)
                         Text(
                           instruction,
-                          style: TextStyle(fontSize: 16.0, color: Colors.grey.shade700),
+                          style: GoogleFonts.roboto(
+                            fontSize: 16.0,
+                            color: Colors.grey.shade700,
+                          ),
                         ),
                     ],
                   ),
                 ),
               ],
+            ),
+          ),
+          // Custom back button at the bottom-right
+          Positioned(
+            bottom: 20.0,
+            right: 20.0,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.pop(context); // go back
+              },
+              backgroundColor: Colors.transparent,
+              elevation: 2, // remove elevation for a flat look
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.white.withOpacity(0.7), //for thickness color
+              ),
             ),
           ),
         ],
