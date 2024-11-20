@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Service/User.dart'; // Corrected the import for your User service
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -19,55 +21,60 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
-  // Simulating a list of already registered emails
-  final List<String> _registeredEmails = [
-    'existing@example.com',
-    'user123@domain.com',
-    'hello@world.com',
-  ];
+  // Instantiate the UserService
+  final Userservice _userService = Userservice();
 
   // Method to handle sign-up logic
-  void _signUp() {
+  void _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
       String email = _emailController.text;
-
-      // Check if the email is already in use
-      if (_isEmailAlreadyUsed(email)) {
-        // Show email already used error modal
-        _showEmailInUseDialog();
-        return;
-      }
-
-      // Simulate account creation
+      String password = _passwordController.text;
       String firstName = _firstNameController.text;
       String lastName = _lastNameController.text;
+      String height = _heightController.text;
+      String weight = _weightController.text;
 
-      // Show success modal (Dialog)
-      _showSuccessDialog(firstName, lastName);
+      // Call the sign-up function from UserService
+      bool isSignedUp = await _userService.signUp(
+        email,
+        password,
+        firstName,
+        lastName,
+        height,
+        weight,
+      );
 
-      // Optionally, navigate to the main page after successful sign-up
-      // Navigator.pushReplacementNamed(context, '/main');
-
-      print('Account Created: $firstName $lastName - $email');
+      // Show success or failure message based on the result
+      if (isSignedUp) {
+        // Save the user's data to SharedPreferences
+        _saveUserData(firstName, lastName, height, weight);
+        _showSuccessDialog(firstName, lastName);
+      } else {
+        _showErrorDialog();
+      }
     } else {
       print('Validation failed');
     }
   }
 
-  // Check if the email is already used
-  bool _isEmailAlreadyUsed(String email) {
-    return _registeredEmails.contains(email);
+  // Method to save user data to SharedPreferences
+  void _saveUserData(String firstName, String lastName, String height, String weight) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('firstName', firstName);
+    prefs.setString('lastName', lastName);
+    prefs.setString('height', height);
+    prefs.setString('weight', weight);
   }
 
-  // Method to show a dialog when email is already used
-  void _showEmailInUseDialog() {
+  // Method to show an error dialog if sign-up fails
+  void _showErrorDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent dismissing by tapping outside the dialog
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Email Already Used'),
-          content: Text('The email address you entered is already in use. Please use a different one.'),
+          title: Text('Sign-up Failed'),
+          content: Text('There was an issue with the sign-up. Please try again later.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -132,10 +139,7 @@ class _SignUpPageState extends State<SignUpPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Top Spacing
                   SizedBox(height: 20),
-
-                  // Header Text
                   Text(
                     'Get Started\nwith Delicious Food!',
                     style: TextStyle(
@@ -156,7 +160,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   _buildTextField(_confirmPasswordController, "Confirm Password", obscureText: true, confirmPassword: true),
                   SizedBox(height: 40),
 
-                  // Sign Up Button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

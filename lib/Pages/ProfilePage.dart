@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -10,224 +12,150 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final ImagePicker _picker = ImagePicker();
-  String _avatarPath = 'assets/Avatar.png'; // Default avatar image path
-  String _firstName = 'First Name'; // Placeholder for first name
-  String _lastName = 'Last Name';   // Placeholder for last name
-  double _weight = 70.0; // Placeholder for weight
-  double _height = 175.0; // Placeholder for height
+  String _firstName = 'First Name';
+  String _lastName = 'Last Name';
+  String _height = 'Height';
+  String _weight = 'Weight';
+  String _avatar = 'assets/default_avatar.png'; // Default avatar image
+
+  final ImagePicker _picker = ImagePicker(); // ImagePicker to choose images
 
   @override
   void initState() {
     super.initState();
-    _loadProfileData(); // Load profile data when the page is loaded
-    _loadAvatar();      // Load avatar image from SharedPreferences
+    _loadProfileData(); // Load user data from SharedPreferences
   }
 
-  // Load profile data (first name, last name, weight, height) from SharedPreferences
+  // Load profile data from SharedPreferences
   _loadProfileData() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _firstName = prefs.getString('firstName') ?? 'First Name'; // Default if not set
-      _lastName = prefs.getString('lastName') ?? 'Last Name';     // Default if not set
-      _weight = prefs.getDouble('weight') ?? 70.0;                // Default if not set
-      _height = prefs.getDouble('height') ?? 175.0;               // Default if not set
+      _firstName = prefs.getString('firstName') ?? 'First Name';
+      _lastName = prefs.getString('lastName') ?? 'Last Name';
+      _height = prefs.getString('height') ?? 'Height';
+      _weight = prefs.getString('weight') ?? 'Weight';
+      _avatar = prefs.getString('avatar') ?? 'assets/default_avatar.png'; // Fetch avatar image path
     });
   }
 
-  // Load avatar image from SharedPreferences (if set)
-  _loadAvatar() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _avatarPath = prefs.getString('avatarPath') ?? 'assets/Avatar.png';
-    });
-  }
-
-  // Pick a new avatar image from the gallery
-  Future<void> _changeAvatar() async {
+  // Function to pick an image (either from camera or gallery)
+  Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString('avatarPath', pickedFile.path);
-
-      setState(() {
-        _avatarPath = pickedFile.path; // Update the avatar path
-      });
+      _saveAvatar(pickedFile.path);
     }
   }
 
-  // Update the weight in SharedPreferences
-  Future<void> _updateWeight(double weight) async {
+  // Save avatar image path to SharedPreferences
+  _saveAvatar(String imagePath) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setDouble('weight', weight);
+    prefs.setString('avatar', imagePath); // Save the image path
     setState(() {
-      _weight = weight;
+      _avatar = imagePath; // Update the UI with the new avatar
     });
-  }
-
-  // Update the height in SharedPreferences
-  Future<void> _updateHeight(double height) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setDouble('height', height);
-    setState(() {
-      _height = height;
-    });
-  }
-
-  // Function to show a dialog to edit weight
-  void _editWeight() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        double newWeight = _weight;
-        return AlertDialog(
-          title: Text('Edit Weight'),
-          content: TextField(
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(labelText: 'Enter your weight (kg)'),
-            onChanged: (value) {
-              if (value.isNotEmpty) {
-                newWeight = double.parse(value);
-              }
-            },
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                _updateWeight(newWeight); // Update weight in SharedPreferences
-                Navigator.of(context).pop();
-              },
-              child: Text('Save'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Function to show a dialog to edit height
-  void _editHeight() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        double newHeight = _height;
-        return AlertDialog(
-          title: Text('Edit Height'),
-          content: TextField(
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(labelText: 'Enter your height (cm)'),
-            onChanged: (value) {
-              if (value.isNotEmpty) {
-                newHeight = double.parse(value);
-              }
-            },
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                _updateHeight(newHeight); // Update height in SharedPreferences
-                Navigator.of(context).pop();
-              },
-              child: Text('Save'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: const Color(0xffA8BBA2),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+        backgroundColor: const Color(0xffA8BBA2), // Greenish background color for AppBar
+        elevation: 0, // No shadow for a clean look
+        automaticallyImplyLeading: false, // Disable back button in AppBar
+        title: Text(
+          'Profile', // Updated app bar title to 'Profile'
+          style: GoogleFonts.poppins( // Apply custom font for the title
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
+        centerTitle: true,
       ),
       body: Container(
-        decoration: const BoxDecoration(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xfff7f7f7), Color(0xffd6e4d9)],
+            colors: [Color(0xfff2f2f2), Color(0xffA8BBA2)], // Gradient background for modern look
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start, // Align content to the top
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Stack to overlay the camera icon on the avatar
-            Stack(
-              alignment: Alignment.bottomRight, // Align camera icon to the bottom-right of the avatar
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start, // Align items to the top
+              crossAxisAlignment: CrossAxisAlignment.center, // Center the profile content
               children: [
-                CircleAvatar(
-                  backgroundImage: AssetImage(_avatarPath),
-                  radius: 55.0,
+                const SizedBox(height: 20), // Space before avatar
+
+                // Avatar Circle with image loaded from SharedPreferences
+                Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundImage: FileImage(File(_avatar)), // Show the avatar image
+                      backgroundColor: Colors.transparent,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.camera_alt, size: 40, color: Colors.black.withOpacity(0.7)),
+                      onPressed: _pickImage, // Open image picker when tapped
+                    ),
+                  ],
                 ),
-                GestureDetector(
-                  onTap: _changeAvatar,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.black, // Black background for the camera icon
-                    radius: 15.0,
-                    child: Icon(Icons.camera_alt, color: Colors.white), // White camera icon
+                const SizedBox(height: 20), // Space after avatar
+
+                // Name display
+                Text(
+                  '$_firstName $_lastName',
+                  style: GoogleFonts.poppins( // Apply custom font for the name
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
+                const SizedBox(height: 10), // Space after name
+
+                // Height and Weight display
+                Text(
+                  'Height: $_height',
+                  style: GoogleFonts.roboto( // Apply custom font for height
+                    fontSize: 18,
+                    color: Colors.black87,
+                  ),
+                ),
+                Text(
+                  'Weight: $_weight',
+                  style: GoogleFonts.roboto( // Apply custom font for weight
+                    fontSize: 18,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 40), // Space after weight
               ],
             ),
-            const SizedBox(height: 20), // Space between avatar and name
-            // Display the retrieved first and last name
-            Text(
-              '$_firstName $_lastName', // Display the first and last name
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 5), // Small space between name and weight/height
-            // Weight and Height display with editing option
-            GestureDetector(
-              onTap: _editWeight, // Trigger editing of weight
-              child: Text(
-                'Weight: $_weight kg',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: _editHeight, // Trigger editing of height
-              child: Text(
-                'Height: $_height cm',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
-              ),
-            ),
-            // Expanded container to take up remaining space
-            Expanded(child: Container()), // Push content upwards
-          ],
+          ),
         ),
       ),
+      floatingActionButton: Positioned(
+        bottom: 20.0,
+        right: 20.0,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.pop(context); // Go back to the previous screen
+          },
+          backgroundColor: Colors.transparent,
+          elevation: 2, // Flat button appearance
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.white.withOpacity(0.7), // Semi-transparent icon color
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
-//ctrl z one time

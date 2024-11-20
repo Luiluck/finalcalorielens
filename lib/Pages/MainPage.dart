@@ -23,7 +23,6 @@ class _MainPageState extends State<MainPage> {
   final List<Map<String, dynamic>> _imageHistory = [];
   bool _isLoading = false;
   String? _lastImagePath;
-  final String userName = "Luis Lacuata";
 
   // Add image details to history
   void _addToHistory(String name, String imageUrl, String analysis, DateTime date) {
@@ -247,7 +246,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Get nutritional insights instantly.',
+                      'Swipe left to go to the recipe.',
                       style: GoogleFonts.roboto(
                         color: Colors.black54,
                         fontSize: 16,
@@ -257,7 +256,7 @@ class _MainPageState extends State<MainPage> {
                 ),
               ),
 
-            // Positioned profile circle avatar with name
+            // Positioned profile circle avatar without name
             Positioned(
               top: 20.0,
               left: 10.0,
@@ -274,50 +273,25 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ],
                 ),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProfilePage(),
-                          ),
-                        );
-                      },
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage('assets/Avatar.png'),
-                        radius: 20,
-                        backgroundColor: Colors.transparent,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProfilePage(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Profile',
+                    style: GoogleFonts.pacifico(
+                      textStyle: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProfilePage(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        userName,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                          shadows: [
-                            Shadow(
-                              blurRadius: 2.0,
-                              color: Colors.black.withOpacity(0.2),
-                              offset: Offset(1, 1),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -467,3 +441,4 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
+//ctrl z 469page
