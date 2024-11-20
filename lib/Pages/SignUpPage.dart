@@ -19,16 +19,93 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
+  // Simulating a list of already registered emails
+  final List<String> _registeredEmails = [
+    'existing@example.com',
+    'user123@domain.com',
+    'hello@world.com',
+  ];
+
   // Method to handle sign-up logic
   void _signUp() {
     if (_formKey.currentState?.validate() ?? false) {
-      print('First Name: ${_firstNameController.text}');
-      print('Last Name: ${_lastNameController.text}');
-      print('Email: ${_emailController.text}');
-      print('Height: ${_heightController.text}');
-      print('Weight: ${_weightController.text}');
-      print('Password: ${_passwordController.text}');
+      String email = _emailController.text;
+
+      // Check if the email is already in use
+      if (_isEmailAlreadyUsed(email)) {
+        // Show email already used error modal
+        _showEmailInUseDialog();
+        return;
+      }
+
+      // Simulate account creation
+      String firstName = _firstNameController.text;
+      String lastName = _lastNameController.text;
+
+      // Show success modal (Dialog)
+      _showSuccessDialog(firstName, lastName);
+
+      // Optionally, navigate to the main page after successful sign-up
+      // Navigator.pushReplacementNamed(context, '/main');
+
+      print('Account Created: $firstName $lastName - $email');
+    } else {
+      print('Validation failed');
     }
+  }
+
+  // Check if the email is already used
+  bool _isEmailAlreadyUsed(String email) {
+    return _registeredEmails.contains(email);
+  }
+
+  // Method to show a dialog when email is already used
+  void _showEmailInUseDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside the dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Email Already Used'),
+          content: Text('The email address you entered is already in use. Please use a different one.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Method to show a success dialog
+  void _showSuccessDialog(String firstName, String lastName) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside the dialog
+      builder: (BuildContext context) {
+        // Delay the dismissal of the dialog
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.of(context).pop(); // Close the dialog after 2 seconds
+        });
+
+        return AlertDialog(
+          title: Text('Account Created'),
+          content: Text('Account successfully created for $firstName $lastName!'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog immediately if user taps 'OK'
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -72,11 +149,11 @@ class _SignUpPageState extends State<SignUpPage> {
                   // Form Fields
                   _buildTextField(_firstNameController, "First Name"),
                   _buildTextField(_lastNameController, "Last Name"),
-                  _buildTextField(_emailController, "Email"),
+                  _buildTextField(_emailController, "Email", email: true),
                   _buildTextField(_heightController, "Height (in inches)", keyboardType: TextInputType.number),
                   _buildTextField(_weightController, "Weight (kg)", keyboardType: TextInputType.number),
                   _buildTextField(_passwordController, "Password", obscureText: true),
-                  _buildTextField(_confirmPasswordController, "Confirm Password", obscureText: true),
+                  _buildTextField(_confirmPasswordController, "Confirm Password", obscureText: true, confirmPassword: true),
                   SizedBox(height: 40),
 
                   // Sign Up Button
@@ -131,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _buildTextField(TextEditingController controller, String hintText,
-      {TextInputType? keyboardType, bool obscureText = false}) {
+      {TextInputType? keyboardType, bool obscureText = false, bool confirmPassword = false, bool email = false}) {
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
@@ -156,6 +233,23 @@ class _SignUpPageState extends State<SignUpPage> {
           if (value == null || value.isEmpty) {
             return 'Please enter your $hintText';
           }
+
+          // Custom validation for email
+          if (email) {
+            String pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            RegExp regExp = RegExp(pattern);
+            if (!regExp.hasMatch(value)) {
+              return 'Please enter a valid email address';
+            }
+          }
+
+          // Custom validation for confirm password
+          if (confirmPassword) {
+            if (value != _passwordController.text) {
+              return 'Passwords do not match';
+            }
+          }
+
           return null;
         },
       ),

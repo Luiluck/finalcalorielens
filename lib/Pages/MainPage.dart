@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import '../Service/ChangePassword.dart';
 import 'ProfilePage.dart';
-// import 'EditProfilePage.dart';
 import 'HistoryPage.dart';
 import 'FoodPage.dart';
 import 'LogInPage.dart';
-
+import 'BMIPage.dart'; // Import BMIPage
+import 'AboutPage.dart'; // Import AboutPage
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -24,6 +25,7 @@ class _MainPageState extends State<MainPage> {
   String? _lastImagePath;
   final String userName = "Luis Lacuata";
 
+  // Add image details to history
   void _addToHistory(String name, String imageUrl, String analysis, DateTime date) {
     setState(() {
       _imageHistory.insert(0, {
@@ -35,29 +37,34 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  // Remove an image from history
   void _deleteFromHistory(int index) {
     setState(() {
       _imageHistory.removeAt(index);
     });
   }
 
+  // Pick an image from the camera or gallery
   Future<void> _pickImage(BuildContext context, ImageSource source) async {
     final pickedImage = await ImagePicker().pickImage(source: source);
     if (pickedImage == null) return;
     final File imageFile = File(pickedImage.path);
-    _lastImagePath = imageFile.path;  // Assign image path correctly
+    _lastImagePath = imageFile.path;
     await _sendImageToBackend(context, imageFile);
   }
 
+  // Send image to backend for analysis
   Future<void> _sendImageToBackend(BuildContext context, File imageFile) async {
     setState(() {
       _isLoading = true;
     });
+
     var request = http.MultipartRequest(
       'POST',
       Uri.parse('https://us-central1-soilproject-91ac2.cloudfunctions.net/app/api/v1/upload'),
     );
     request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
+
     try {
       var response = await request.send();
       final responseBody = await response.stream.transform(utf8.decoder).join();
@@ -65,9 +72,11 @@ class _MainPageState extends State<MainPage> {
         final analysisData = jsonDecode(responseBody);
         final analysis = analysisData['Analysis']?.toString() ?? 'No analysis available';
         final imageUrl = analysisData['imageUrl'];
+
         // Show the analysis dialog
         _showAnalysisDialog(context, imageUrl, analysis, _lastImagePath);
-        // Add to history: If imageUrl is not null, use it; otherwise, use the local file path
+
+        // Add to history
         if (imageUrl != null) {
           _addToHistory('Analysis Result', imageUrl, analysis, DateTime.now());
         } else {
@@ -85,6 +94,7 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  // Show error dialog
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -105,6 +115,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  // Show analysis dialog
   void _showAnalysisDialog(BuildContext context, String? imageUrl, String analysis, String? capturedImagePath) {
     showDialog(
       context: context,
@@ -139,6 +150,38 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  // Show log out confirmation dialog
+  void _showLogOutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Log Out'),
+          content: const Text('Are you sure you want to log out?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: const Text('Log Out'),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LogInPage(),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -146,7 +189,7 @@ class _MainPageState extends State<MainPage> {
         if (details.primaryVelocity! < 0) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => FoodPage()), // Navigate to FoodPage on swipe left
+            MaterialPageRoute(builder: (context) => FoodPage()),
           );
         }
       },
@@ -165,6 +208,7 @@ class _MainPageState extends State<MainPage> {
             ),
             // Loading indicator
             if (_isLoading) const Center(child: CircularProgressIndicator()),
+
             // Main content
             if (!_isLoading)
               Center(
@@ -193,18 +237,26 @@ class _MainPageState extends State<MainPage> {
                       child: Image.asset('assets/Food.gif', fit: BoxFit.cover),
                     ),
                     const SizedBox(height: 15),
-                    const Text(
+                    Text(
                       'Snap Your Food!',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
+                    Text(
                       'Get nutritional insights instantly.',
-                      style: TextStyle(color: Colors.black54),
+                      style: GoogleFonts.roboto(
+                        color: Colors.black54,
+                        fontSize: 16,
+                      ),
                     ),
                   ],
                 ),
               ),
+
             // Positioned profile circle avatar with name
             Positioned(
               top: 20.0,
@@ -251,7 +303,7 @@ class _MainPageState extends State<MainPage> {
                       },
                       child: Text(
                         userName,
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: Colors.black87,
@@ -269,37 +321,36 @@ class _MainPageState extends State<MainPage> {
                 ),
               ),
             ),
+
             // Positioned settings button at top-right corner with PopupMenuButton
             Positioned(
               top: 20.0,
               right: 10.0,
               child: PopupMenuButton<String>(
                 onSelected: (String value) {
-                  switch (value) {
-                    case 'Change Password':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ChangePasswordPage(),
-                        ),
-                      );
-                    //   break;
-                    // case 'Edit Profile':
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => const EditProfilePage(),
-                    //     ),
-                    //   );
-                      break;
-                    case 'Log Out':
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LogInPage(),
-                        ),
-                      );
-                      break;
+                  if (value == 'Log Out') {
+                    _showLogOutDialog(context); // Show confirmation dialog
+                  } else if (value == 'Change Password') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChangePasswordPage(),
+                      ),
+                    );
+                  } else if (value == 'About') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AboutPage(),
+                      ),
+                    );
+                  } else if (value == 'BMI') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BMIPage(),
+                      ),
+                    );
                   }
                 },
                 itemBuilder: (BuildContext context) {
@@ -309,6 +360,14 @@ class _MainPageState extends State<MainPage> {
                       child: Text('Change Password'),
                     ),
                     const PopupMenuItem<String>(
+                      value: 'About',
+                      child: Text('About'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'BMI',
+                      child: Text('BMI'),
+                    ),
+                    const PopupMenuItem<String>(
                       value: 'Log Out',
                       child: Text('Log Out'),
                     ),
@@ -316,6 +375,8 @@ class _MainPageState extends State<MainPage> {
                 },
               ),
             ),
+
+            // Positioned action buttons at bottom
             Positioned(
               bottom: 30,
               left: 20,
@@ -323,7 +384,7 @@ class _MainPageState extends State<MainPage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
-                  color: Color(0xffA8BBA2),
+                  color: Color(0xFFD3D3D3),
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
                     BoxShadow(
@@ -339,7 +400,14 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     ElevatedButton(
                       onPressed: () => _pickImage(context, ImageSource.camera),
-                      child: const Text('Camera'),
+                      child: Text(
+                        'Camera',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xffd3d3d3),
                         shape: RoundedRectangleBorder(
@@ -357,7 +425,14 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                       ),
-                      child: const Text('History'),
+                      child: Text(
+                        'History',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xffd3d3d3),
                         shape: RoundedRectangleBorder(
@@ -367,7 +442,14 @@ class _MainPageState extends State<MainPage> {
                     ),
                     ElevatedButton(
                       onPressed: () => _pickImage(context, ImageSource.gallery),
-                      child: const Text('Gallery'),
+                      child: Text(
+                        'Gallery',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xffd3d3d3),
                         shape: RoundedRectangleBorder(

@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: AnimatedOpacity(
           opacity: _opacity,
           duration: Duration(seconds: 1),  // Fade in/out duration
-          child: Image.asset('assets/Avatar.png', width: 200),
+          child: Image.asset('assets/POPUP.png', width: 200),
         ),
       ),
     );

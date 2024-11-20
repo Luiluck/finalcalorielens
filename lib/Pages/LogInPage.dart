@@ -41,10 +41,10 @@ class _LogInPageState extends State<LogInPage> {
                 Container(
                   padding: EdgeInsets.only(top: 80), // Add top padding to position the logo
                   child: Center(
-                    child: Image.asset('assets/Avatar.png', width: 100, height: 100), // Centered logo
+                    child: Image.asset('assets/LOGO1.png', width: 1000, height: 120), // Centered logo
                   ),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 1),
                 // Add extra space before login form
                 SizedBox(height: 50), // Adjust this value to move the login form lower or higher
                 // Login form container with text fields and button
