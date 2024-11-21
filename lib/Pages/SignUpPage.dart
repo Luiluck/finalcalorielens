@@ -105,7 +105,7 @@ class _SignUpPageState extends State<SignUpPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Dismiss the dialog immediately if user taps 'OK'
+                Navigator.of(context).pop(); // Dismiss if 'OK'
               },
               child: Text('OK'),
             ),

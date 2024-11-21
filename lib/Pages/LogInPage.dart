@@ -28,8 +28,8 @@ class _LogInPageState extends State<LogInPage> {
           height: MediaQuery.of(context).size.height, // Make sure the height is the same as the screen height
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/bgg.jpg'), // Set your background image here
-              fit: BoxFit.cover, // Make sure the image covers the entire screen
+              image: AssetImage('assets/bgg.jpg'), // BG
+              fit: BoxFit.cover, // Covers the entire screen
             ),
           ),
           child: Padding(

@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _startSplashScreen();
   }
 
-  // Start the splash screen animation and transition to the next screen
+  // Start transition to the next screen
   void _startSplashScreen() {
     Future.delayed(Duration(milliseconds: 500), () {
       setState(() {
@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // Transition to the LogInPage after the splash screen fades out
     Future.delayed(Duration(seconds: 4), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => LogInPage(),  // Navigate to LogInPage
+        builder: (context) => LogInPage(),  // NavigateLogInPage
       ));
     });
   }

@@ -77,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
         height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xfff2f2f2), Color(0xffA8BBA2)], // Gradient background for modern look
+            colors: [Color(0xfff2f2f2), Color(0xffA8BBA2)], // GradientBackground
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -89,9 +89,9 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.start, // Align items to the top
               crossAxisAlignment: CrossAxisAlignment.center, // Center the profile content
               children: [
-                const SizedBox(height: 20), // Space before avatar
+                const SizedBox(height: 20), // SpaceAvatar
 
-                // Avatar Circle with image loaded from SharedPreferences
+                // Avatar
                 Stack(
                   alignment: Alignment.bottomRight,
                   children: [
@@ -102,39 +102,39 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     IconButton(
                       icon: Icon(Icons.camera_alt, size: 40, color: Colors.black.withOpacity(0.7)),
-                      onPressed: _pickImage, // Open image picker when tapped
+                      onPressed: _pickImage,//gallery
                     ),
                   ],
                 ),
-                const SizedBox(height: 20), // Space after avatar
+                const SizedBox(height: 20), // SpaceAvatar
 
                 // Name display
                 Text(
                   '$_firstName $_lastName',
-                  style: GoogleFonts.poppins( // Apply custom font for the name
+                  style: GoogleFonts.poppins( // Font
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 10), // Space after name
+                const SizedBox(height: 10), // SpaceName
 
                 // Height and Weight display
                 Text(
                   'Height: $_height',
-                  style: GoogleFonts.roboto( // Apply custom font for height
+                  style: GoogleFonts.roboto( // Font
                     fontSize: 18,
                     color: Colors.black87,
                   ),
                 ),
                 Text(
                   'Weight: $_weight',
-                  style: GoogleFonts.roboto( // Apply custom font for weight
+                  style: GoogleFonts.roboto( // Font
                     fontSize: 18,
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 40), // Space after weight
+                const SizedBox(height: 40), // SpaceAfterWeight
               ],
             ),
           ),
@@ -145,13 +145,13 @@ class _ProfilePageState extends State<ProfilePage> {
         right: 20.0,
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.pop(context); // Go back to the previous screen
+            Navigator.pop(context); //previous screen
           },
           backgroundColor: Colors.transparent,
           elevation: 2, // Flat button appearance
           child: Icon(
             Icons.arrow_back,
-            color: Colors.white.withOpacity(0.7), // Semi-transparent icon color
+            color: Colors.white.withOpacity(0.7), //icon color
           ),
         ),
       ),

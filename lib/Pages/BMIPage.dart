@@ -119,7 +119,7 @@ class _BMIPageState extends State<BMIPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Calculate button with greenish background and white text
+                  // Calculate button
                   ElevatedButton(
                     onPressed: _calculateBMI,
                     child: Text(
@@ -127,10 +127,10 @@ class _BMIPageState extends State<BMIPage> {
                       style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black), // White text color
+                          color: Colors.black),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xffA8BBA2), // Button background color
+                      backgroundColor: const Color(0xffA8BBA2), // BGColor
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
@@ -184,13 +184,13 @@ class _BMIPageState extends State<BMIPage> {
         right: 20.0,
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.pop(context); // Navigate back when pressed
+            Navigator.pop(context); // NavigateBack
           },
           backgroundColor: Colors.transparent,
           elevation: 2, // To make it look flat
           child: Icon(
             Icons.arrow_back,
-            color: Colors.white.withOpacity(0.7), // Arrow color with opacity
+            color: Colors.white.withOpacity(0.7),
           ),
         ),
       ),
