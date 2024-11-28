@@ -143,7 +143,7 @@
                 ),
                 actions: <Widget>[
                   TextButton(
-                    child: const Text('Translate to Tagalog'),
+                    child: const Text('Translate To Tagalog'),
                     onPressed: () {
                       // Navigate to TranslatedPage and pass the analysis and translated text
                       Navigator.push(

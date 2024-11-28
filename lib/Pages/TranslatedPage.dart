@@ -36,7 +36,7 @@ class _TranslatedPageState extends State<TranslatedPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Translated Page'),
+        title: const Text('Translated'),
         backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(  // Wrap the body with SingleChildScrollView for scrolling
