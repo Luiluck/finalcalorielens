@@ -401,7 +401,7 @@ class _MainPageFilState extends State<MainPageFil> {
                       child: Text(
                         'Kamera',
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: 11,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -426,7 +426,7 @@ class _MainPageFilState extends State<MainPageFil> {
                       child: Text(
                         'Kasaysayan',
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: 11,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -443,7 +443,7 @@ class _MainPageFilState extends State<MainPageFil> {
                       child: Text(
                         'Galerya',
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: 11,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
