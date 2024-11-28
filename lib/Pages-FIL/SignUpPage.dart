@@ -62,8 +62,8 @@ class _SignUpPageState extends State<SignUpPage> {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('firstName', firstName);
     prefs.setString('lastName', lastName);
-    prefs.setString('height', height);
-    prefs.setString('weight', weight);
+    prefs.setString('Tangkad', height);
+    prefs.setString('Timbang', weight);
   }
 
   // Method to show an error dialog if sign-up fails
@@ -74,7 +74,7 @@ class _SignUpPageState extends State<SignUpPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Sign-up Failed'),
-          content: Text('There was an issue with the sign-up. Please try again later.'),
+          content: Text('may isyu sa sign-up. Subukan muli mamaya.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -101,11 +101,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
         return AlertDialog(
           title: Text('Account Created'),
-          content: Text('Account successfully created for $firstName $lastName!'),
+          content: Text('Ang Account ay natapos gawin para kay $firstName $lastName!'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Dismiss the dialog immediately if user taps 'OK'
+                Navigator.of(context).pop(); // Dismiss if 'OK'
               },
               child: Text('OK'),
             ),
@@ -141,7 +141,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
                   SizedBox(height: 20),
                   Text(
-                    'Get Started\nwith Delicious Food!',
+                    'Mag simula tayo kasama ang masarap na pagkain Get Started\nwith Delicious Food!',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 33,
@@ -151,13 +151,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(height: 20),
 
                   // Form Fields
-                  _buildTextField(_firstNameController, "First Name"),
-                  _buildTextField(_lastNameController, "Last Name"),
+                  _buildTextField(_firstNameController, "Unang pangalan"),
+                  _buildTextField(_lastNameController, "apelyido"),
                   _buildTextField(_emailController, "Email", email: true),
-                  _buildTextField(_heightController, "Height (in inches)", keyboardType: TextInputType.number),
-                  _buildTextField(_weightController, "Weight (kg)", keyboardType: TextInputType.number),
+                  _buildTextField(_heightController, "Tangkad (in inches)", keyboardType: TextInputType.number),
+                  _buildTextField(_weightController, "Timbang (kg)", keyboardType: TextInputType.number),
                   _buildTextField(_passwordController, "Password", obscureText: true),
-                  _buildTextField(_confirmPasswordController, "Confirm Password", obscureText: true, confirmPassword: true),
+                  _buildTextField(_confirmPasswordController, "Kumpirmahin Password", obscureText: true, confirmPassword: true),
                   SizedBox(height: 40),
 
                   Row(
@@ -192,7 +192,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         Navigator.pushNamed(context, 'login');
                       },
                       child: Text(
-                        'Already have an account? Sign In',
+                        'Nakagawa na ng account? mag Sign In',
                         style: TextStyle(
                           decoration: TextDecoration.underline,
                           color: Colors.black,
@@ -234,7 +234,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter your $hintText';
+            return 'Ilagay ang iyo $hintText';
           }
 
           // Custom validation for email

@@ -1,31 +1,30 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:finalcalorielens/Pages/MainPage.dart';
+import 'package:finalcalorielens/Service/ChangePasswordFil.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import '../Service/ChangePassword.dart';
 import 'ProfilePage.dart';
 import 'HistoryPage.dart';
 import 'FoodPage.dart';
 import 'LogInPage.dart';
 import 'BMIPage.dart'; // Import BMIPage
 import 'AboutPage.dart'; // Import AboutPage
-import 'TrasnlatedPage.dart';
-import 'package:finalcalorielens/Pages-fil/MainPageFil.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+class MainPageFil extends StatefulWidget {
+  const MainPageFil({Key? key}) : super(key: key);
 
   @override
-  _MainPageState createState() => _MainPageState();
+  _MainPageFilState createState() => _MainPageFilState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageFilState extends State<MainPageFil> {
   final List<Map<String, dynamic>> _imageHistory = [];
   bool _isLoading = false;
   String? _lastImagePath;
-  String lang = 'eng';
+  String lang = 'fil';
 
   // Add image details to history
   void _addToHistory(String name, String imageUrl, String analysis, DateTime date) {
@@ -80,15 +79,15 @@ class _MainPageState extends State<MainPage> {
 
         // Add to history
         if (imageUrl != null) {
-          _addToHistory('Analysis Result', imageUrl, analysis, DateTime.now());
+          _addToHistory('resulta ng pagsusuri', imageUrl, analysis, DateTime.now());
         } else {
-          _addToHistory('Captured Image', _lastImagePath!, analysis, DateTime.now());
+          _addToHistory('nakunan larawan', _lastImagePath!, analysis, DateTime.now());
         }
       } else {
-        _showErrorDialog(context, 'Failed to upload image');
+        _showErrorDialog(context, 'sablay ang pag-upload ng larawan');
       }
     } catch (e) {
-      _showErrorDialog(context, 'An error occurred while sending the image: $e');
+      _showErrorDialog(context, 'Nagkaroon ng error habang ipinapadala ang larawan: $e');
     } finally {
       setState(() {
         _isLoading = false;
@@ -96,123 +95,17 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  // Fetch translation from API
-  Future<String> translateText(String text, String targetLang) async {
-    final url = Uri.parse('https://api.mymemory.translated.net/get');
-    try {
-      final response = await http.get(url.replace(queryParameters: {
-        'q': text,
-        'langpair': 'en|$targetLang',
-      }));
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final translatedText = data['responseData']['translatedText'] ?? 'Translation failed';
-        return translatedText;
-      } else {
-        return 'Error: ${response.reasonPhrase}';
-      }
-    } catch (e) {
-      return 'Translation failed: $e';
-    }
-  }
-
-
-  // Show analysis dialog
-  Future<void> _showAnalysisDialog(BuildContext context, String? imageUrl, String analysis, String? capturedImagePath) async {
-    String translatedText = await translateText(analysis, 'tl'); // Translate to Tagalog or desired language
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              title: const Text('Analysis Result'),
-              content: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    if (capturedImagePath != null) Image.file(File(capturedImagePath)),
-                    if (imageUrl != null)
-                      Image.network(imageUrl)
-                    else
-                      const Text('Picture Here'),
-                    const SizedBox(height: 10),
-                    Text('Analysis: $analysis', style: const TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 10),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Translate To Tagalog'),
-                  onPressed: () {
-                    // Navigate to TranslatedPage and pass the analysis and translated text
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TranslatedPage(
-                          analysisText: analysis, // Pass the analysis text
-                          translatedText: translatedText, // Pass the translated text
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                TextButton(
-                  child: const Text('Close'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _showLogOutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Log Out'),
-          content: const Text('Are you sure you want to log out?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-            TextButton(
-              child: const Text('Log Out'),
-              onPressed: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const LogInPage()),
-                      (route) => false, // Clear the navigation stack
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Error dialog
+  // Show error dialog
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Error'),
+          title: const Text('May Error'),
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: const Text('Close'),
+              child: const Text('Isara'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -222,6 +115,74 @@ class _MainPageState extends State<MainPage> {
       },
     );
   }
+
+  // Show analysis dialog
+  void _showAnalysisDialog(BuildContext context, String? imageUrl, String analysis, String? capturedImagePath) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Resulta ng Analysis'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                if (capturedImagePath != null) Image.file(File(capturedImagePath)),
+                if (imageUrl != null)
+                  Image.network(imageUrl)
+                else
+                  const Text('Larawan Dito'),
+                const SizedBox(height: 10),
+                Text('Pagsusuri: $analysis', style: const TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Center(
+              child: TextButton(
+                child: const Text('Isara'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Show log out confirmation dialog
+  void _showLogOutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Mag-Log Out'),
+          content: const Text('Sigurado kang gusto mo mag log-out?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ikansela'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: const Text('Mag-Log Out'),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LogInPage(),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -278,7 +239,8 @@ class _MainPageState extends State<MainPage> {
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      'Snap Your Food!',
+                      'Kuhaan ng Litrato ang Iyong Pagkain!',
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -287,7 +249,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Swipe left to go to the recipe.',
+                      'Mag-swipe sa kaliwa para sa mga recipe',
                       style: GoogleFonts.roboto(
                         color: Colors.black54,
                         fontSize: 16,
@@ -349,7 +311,7 @@ class _MainPageState extends State<MainPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ChangePasswordPage(),
+                        builder: (context) => const ChangePasswordFilPage(),
                       ),
                     );
                   } else if (value == 'About') {
@@ -380,22 +342,20 @@ class _MainPageState extends State<MainPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const MainPageFil(),
+                        builder: (context) => const MainPage(),
                       ),
                     );
-                    // to-do - change language to filipino
-                    // to-do - load filipino version of the app
                   }
                 },
                 itemBuilder: (BuildContext context) {
                   return [
                     const PopupMenuItem<String>(
                       value: 'Change Password',
-                      child: Text('Change Password'),
+                      child: Text('Palitan ang Password'),
                     ),
                     const PopupMenuItem<String>(
                       value: 'About',
-                      child: Text('About'),
+                      child: Text('Tungkol sa Amin'),
                     ),
                     const PopupMenuItem<String>(
                       value: 'BMI',
@@ -403,11 +363,11 @@ class _MainPageState extends State<MainPage> {
                     ),
                     const PopupMenuItem<String>(
                       value: 'Log Out',
-                      child: Text('Log Out'),
+                      child: Text('Mag-log Out'),
                     ),
                     PopupMenuItem<String>(
                         value: 'Language',
-                        child: Text('Language: $lang')
+                        child: Text('Wika: $lang')
                     )
                   ];
                 },
@@ -439,7 +399,7 @@ class _MainPageState extends State<MainPage> {
                     ElevatedButton(
                       onPressed: () => _pickImage(context, ImageSource.camera),
                       child: Text(
-                        'Camera',
+                        'Kamera',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -464,7 +424,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
                       child: Text(
-                        'History',
+                        'Kasaysayan',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -481,7 +441,7 @@ class _MainPageState extends State<MainPage> {
                     ElevatedButton(
                       onPressed: () => _pickImage(context, ImageSource.gallery),
                       child: Text(
-                        'Gallery',
+                        'Galerya',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
