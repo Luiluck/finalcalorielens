@@ -118,7 +118,7 @@ class _MainPageState extends State<MainPage> {
   }
 
 
-  // Show analysis dialog
+// Show analysis dialog
   Future<void> _showAnalysisDialog(BuildContext context, String? imageUrl, String analysis, String? capturedImagePath) async {
     String translatedText = await translateText(analysis, 'tl'); // Translate to Tagalog or desired language
 
@@ -160,6 +160,12 @@ class _MainPageState extends State<MainPage> {
                   },
                 ),
                 TextButton(
+                  child: const Text('Detect Allergies'),
+                  onPressed: () {
+                    _detectAllergies(context, analysis);
+                  },
+                ),
+                TextButton(
                   child: const Text('Close'),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -171,6 +177,60 @@ class _MainPageState extends State<MainPage> {
         );
       },
     );
+  }
+
+// Allergy detection logic
+  Future<void> _detectAllergies(BuildContext context, String analysis) async {
+    // Get the user's allergy list from the profile (this might need to be fetched or passed in)
+    List<String> allergies = await _getUserAllergies();
+
+    // Check if any allergy is mentioned in the analysis
+    bool allergyDetected = false;
+    String detectedAllergy = '';
+
+    // Assuming 'analysis' contains a list of food items or ingredients
+    for (var allergy in allergies) {
+      if (analysis.toLowerCase().contains(allergy.toLowerCase())) {
+        allergyDetected = true;
+        detectedAllergy = allergy;
+        break;
+      }
+    }
+
+    String message = allergyDetected
+        ? 'Warning $detectedAllergy detected in the food.'
+        : 'No allergic food detected';
+
+    // Show a dialog with the allergy detection result
+    _showAllergyResultDialog(context, message);
+  }
+
+// Show allergy result dialog
+  void _showAllergyResultDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Allergy Detection'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+// Fetch the user's allergies from the profile (you need to implement this part)
+  Future<List<String>> _getUserAllergies() async {
+    // Example: Fetching the allergy list from the profile
+    // Replace this with your actual implementation for fetching allergies
+    return ['peanuts', 'fish', 'dairy', 'vinegar', 'pork', 'chocolate']; // Example allergy list
   }
 
   void _showLogOutDialog(BuildContext context) {
